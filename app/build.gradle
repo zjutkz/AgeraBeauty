@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.zjutkz.app"
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -23,8 +23,15 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.2.1'
+    compile 'com.android.support:design:23.2.1'
+    compile 'com.android.support:cardview-v7:23.2.1'
     compile 'com.zjutkz:AgeraBus:1.0.1'
     compile 'me.drakeet.retrofit2:adapter-agera:2.1.0'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.zjutkz:PowerfulRecyclerView:1.0.0'
+    compile 'com.hannesdorfmann.mosby:mvp:2.0.1'
+    compile 'uk.co.chrisjenx:calligraphy:2.2.0'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.15'
 }

@@ -24,13 +24,11 @@ public class BeautyService {
     }
 
     public Retrofit getNetEngine(){
-        Retrofit retrofit = new Retrofit.Builder()
+        return new Retrofit.Builder()
                 .baseUrl("http://gank.io/api/search/query/listview/category/福利/")
                 .client(new OkHttpClient())
                 .addCallAdapterFactory(AgeraCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-
-        return retrofit;
     }
 }
