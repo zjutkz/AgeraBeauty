@@ -30,7 +30,7 @@ public class Beauty implements Serializable{
     public List<BeautyEntity> results;
 
 
-    public static class BeautyEntity {
+    public static class BeautyEntity implements Serializable{
         public String desc;
         public String ganhuo_id;
         public String publishedAt;

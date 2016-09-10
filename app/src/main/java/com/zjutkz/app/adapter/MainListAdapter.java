@@ -32,11 +32,6 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.MainLi
         notifyDataSetChanged();
     }
 
-    public void appendBeautiesToTail(List<Beauty.BeautyEntity> beauties){
-        this.beauties.addAll(beauties);
-        notifyDataSetChanged();
-    }
-
     @Override
     public MainListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new MainListViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_main_list,parent,false));

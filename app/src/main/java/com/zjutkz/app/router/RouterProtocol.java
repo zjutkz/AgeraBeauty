@@ -6,4 +6,6 @@ package com.zjutkz.app.router;
 public class RouterProtocol {
 
     public static final String MAIN = "main";
+
+    public static final String GALLERY = "gallery";
 }

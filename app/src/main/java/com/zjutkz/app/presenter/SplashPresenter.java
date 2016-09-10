@@ -14,6 +14,6 @@ public class SplashPresenter extends MvpBasePresenter<SplashView> {
     private static final long DELAY_TIME = 3000;
 
     public void startCountDown(){
-        AgeraBus.eventRepositories().postDelay(new RouteEvent(RouterProtocol.MAIN),DELAY_TIME);
+        AgeraBus.eventRepositories().postDelay(new RouteEvent(RouterProtocol.MAIN,null),DELAY_TIME);
     }
 }

@@ -8,8 +8,10 @@ import java.io.Serializable;
 public class RouteEvent implements Serializable{
 
     public String protocol;
+    public Object bundle;
 
-    public RouteEvent(String protocol){
+    public RouteEvent(String protocol,Object bundle){
         this.protocol = protocol;
+        this.bundle = bundle;
     }
 }

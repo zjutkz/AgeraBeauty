@@ -73,7 +73,7 @@ public class SplashActivity extends MvpActivity<SplashView,SplashPresenter> impl
         if(AgeraBus.eventRepositories().get() instanceof RouteEvent){
             RouteEvent routeEvent = (RouteEvent) AgeraBus.eventRepositories().get();
             if(RouterProtocol.MAIN.equals(routeEvent.protocol)){
-                Router.routeToMainPage(this);
+                Router.getInstance().route(this,routeEvent.protocol);
                 finish();
             }
         }

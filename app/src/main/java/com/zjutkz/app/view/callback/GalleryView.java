@@ -5,5 +5,5 @@ import com.hannesdorfmann.mosby.mvp.MvpView;
 /**
  * Created by kangzhe on 16/9/9.
  */
-public interface MainView extends MvpView{
+public interface GalleryView extends MvpView{
 }
