@@ -84,7 +84,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> implements Updatab
             beauties.results.addAll(repository.get().results);
         }
 
-        AgeraBus.eventRepositories().post(new LoadEvent(beauties.results));
+        AgeraBus.eventRepositories().post(new LoadEvent(lastAction,beauties.results));
     }
 
     @Override

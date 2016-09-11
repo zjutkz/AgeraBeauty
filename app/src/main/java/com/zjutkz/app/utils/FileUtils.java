@@ -89,9 +89,9 @@ public class FileUtils {
             shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(intentFile));
             shareIntent.setType("image/jpg");
             if(!(context instanceof Activity)){
-                context.startActivity(Intent.createChooser(shareIntent, "请选择分享方式!").setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                context.startActivity(Intent.createChooser(shareIntent, "请选择分享方式~").setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             }else {
-                context.startActivity(Intent.createChooser(shareIntent, "请选择分享方式!"));
+                context.startActivity(Intent.createChooser(shareIntent, "请选择分享方式~"));
             }
 
 

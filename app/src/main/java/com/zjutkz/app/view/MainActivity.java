@@ -87,6 +87,11 @@ public class MainActivity extends MvpActivity<MainView,MainPresenter> implements
     public void onEventReceiveInMain() {
         Object event = AgeraBus.eventRepositories().get();
         if(event instanceof LoadEvent){
+            if(((LoadEvent) event).reqType == MainPresenter.REFRESH){
+                beauties.stopRefresh();
+            }else {
+                beauties.stopLoadMore();
+            }
             setBeautiesToAdapter((LoadEvent)event);
         }else if(event instanceof RouteEvent){
             RouteEvent routeEvent = (RouteEvent)event;

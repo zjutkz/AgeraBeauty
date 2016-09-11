@@ -10,9 +10,11 @@ import java.util.List;
  */
 public class LoadEvent implements Serializable{
 
+    public int reqType;
     public List<Beauty.BeautyEntity> beauties;
 
-    public LoadEvent(List<Beauty.BeautyEntity> beauties){
+    public LoadEvent(int reqType,List<Beauty.BeautyEntity> beauties){
+        this.reqType = reqType;
         this.beauties = beauties;
     }
 }
