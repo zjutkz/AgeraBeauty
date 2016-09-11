@@ -8,4 +8,6 @@ public class IntentConstants {
     public static final String GALLERY_DATA = "gallery_data";
 
     public static final String GALLERY_START = "gallery_start";
+
+    public static final String SPECIFIC_DATA = "specific_data";
 }

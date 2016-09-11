@@ -9,6 +9,9 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.zjutkz.app.R;
 import com.zjutkz.app.model.Beauty;
+import com.zjutkz.app.model.eventbus.RouteEvent;
+import com.zjutkz.app.router.RouterProtocol;
+import com.zjutkz.lib.AgeraBus;
 
 import java.util.List;
 
@@ -39,9 +42,15 @@ public class GalleryAdapter extends PagerAdapter{
     }
 
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Object instantiateItem(ViewGroup container, final int position) {
         View view = LayoutInflater.from(container.getContext()).inflate(R.layout.item_gallery,container,false);
         ImageView iv = (ImageView)view.findViewById(R.id.gallery_iv);
+        iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AgeraBus.eventRepositories().post(new RouteEvent(RouterProtocol.SPECIFIC,beauties.get(position).url));
+            }
+        });
         Glide.with(container.getContext())
                 .load(beauties.get(position).url)
                 .centerCrop()

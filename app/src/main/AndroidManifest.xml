@@ -3,8 +3,13 @@
     package="com.zjutkz.app" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SENDTO"></uses-permission>
+    <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL"></uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
 
     <application
+        android:name=".BeautyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -21,6 +26,8 @@
         <activity android:name=".view.MainActivity"/>
 
         <activity android:name=".view.GalleryActivity"/>
+
+        <activity android:name=".view.SpecificActivity"/>
     </application>
 
 </manifest>

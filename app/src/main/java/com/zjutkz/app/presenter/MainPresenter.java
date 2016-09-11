@@ -1,5 +1,6 @@
 package com.zjutkz.app.presenter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
 import com.google.android.agera.Repositories;
@@ -12,6 +13,7 @@ import com.zjutkz.app.model.eventbus.LoadEvent;
 import com.zjutkz.app.model.eventbus.RouteEvent;
 import com.zjutkz.app.router.RouterProtocol;
 import com.zjutkz.app.service.BeautyService;
+import com.zjutkz.app.utils.AppUtils;
 import com.zjutkz.app.view.callback.MainView;
 import com.zjutkz.lib.AgeraBus;
 import com.zjutkz.powerfulrecyclerview.listener.OnLoadMoreListener;
@@ -19,7 +21,6 @@ import com.zjutkz.powerfulrecyclerview.listener.OnRefreshListener;
 import com.zjutkz.powerfulrecyclerview.ptr.PowerfulRecyclerView;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Executors;
 
 /**
@@ -28,7 +29,6 @@ import java.util.concurrent.Executors;
 public class MainPresenter extends MvpBasePresenter<MainView> implements Updatable,PowerfulRecyclerView.OnItemClickListener,
         PowerfulRecyclerView.OnItemLongClickListener,OnRefreshListener,OnLoadMoreListener{
 
-
     public static final int LOAD_MORE = 100;
     public static final int REFRESH = 101;
 
@@ -36,7 +36,9 @@ public class MainPresenter extends MvpBasePresenter<MainView> implements Updatab
 
     private Repository<Beauty> repository;
 
-    private int lastReqType;
+    private Context context;
+    
+    private int lastAction;
 
     private int page;
 
@@ -44,11 +46,12 @@ public class MainPresenter extends MvpBasePresenter<MainView> implements Updatab
 
     private int lastPosition;
 
-    public MainPresenter(){
+    public MainPresenter(Context context){
+        this.context = context;
+
         page = 1;
         beauties = new Beauty();
-        List<Beauty.BeautyEntity> list = new ArrayList<>();
-        beauties.results = list;
+        beauties.results = new ArrayList<>();
     }
 
     public void getBeauty(int type){
@@ -58,7 +61,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> implements Updatab
             page = 1;
         }
 
-        lastReqType = type;
+        lastAction = type;
 
         Beauty beauty = new Beauty();
         repository = Repositories.repositoryWithInitialValue(beauty)
@@ -74,12 +77,13 @@ public class MainPresenter extends MvpBasePresenter<MainView> implements Updatab
 
     @Override
     public void update() {
-        if(lastReqType == REFRESH){
+        if(lastAction == REFRESH){
             beauties.results.clear();
             beauties.results.addAll(repository.get().results);
-        }else {
+        }else if(lastAction == LOAD_MORE){
             beauties.results.addAll(repository.get().results);
         }
+
         AgeraBus.eventRepositories().post(new LoadEvent(beauties.results));
     }
 
@@ -100,8 +104,9 @@ public class MainPresenter extends MvpBasePresenter<MainView> implements Updatab
     }
 
     @Override
-    public boolean onItemLongClick(RecyclerView parent, RecyclerView.ViewHolder holder, int position) {
-        return false;
+    public boolean onItemLongClick(RecyclerView parent, RecyclerView.ViewHolder holder, final int position) {
+        AppUtils.showSaveOrShareDialog(context,beauties.results.get(position).url);
+        return true;
     }
 
     public int getLastPosition() {

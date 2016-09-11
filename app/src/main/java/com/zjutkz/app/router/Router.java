@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import com.zjutkz.app.view.GalleryActivity;
 import com.zjutkz.app.view.MainActivity;
+import com.zjutkz.app.view.SpecificActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +67,8 @@ public class Router implements IRouter{
             case RouterProtocol.GALLERY:
                 intent.setClass(context,GalleryActivity.class);
                 break;
+            case RouterProtocol.SPECIFIC:
+                intent.setClass(context, SpecificActivity.class);
         }
         routeToSomePage(context,intent);
 
