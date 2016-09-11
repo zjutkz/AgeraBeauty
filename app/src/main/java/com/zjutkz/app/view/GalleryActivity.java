@@ -14,11 +14,13 @@ import com.zjutkz.app.R;
 import com.zjutkz.app.adapter.GalleryAdapter;
 import com.zjutkz.app.constants.IntentConstants;
 import com.zjutkz.app.model.Beauty;
+import com.zjutkz.app.model.eventbus.BottomMenuEvent;
 import com.zjutkz.app.model.eventbus.PageChangedEvent;
 import com.zjutkz.app.model.eventbus.RouteEvent;
 import com.zjutkz.app.presenter.GalleryPresenter;
 import com.zjutkz.app.router.Router;
 import com.zjutkz.app.router.RouterProtocol;
+import com.zjutkz.app.utils.AppUtils;
 import com.zjutkz.app.view.callback.GalleryView;
 import com.zjutkz.app.view.transformer.ScaleTransformer;
 import com.zjutkz.lib.AgeraBus;
@@ -88,11 +90,11 @@ public class GalleryActivity extends MvpActivity<GalleryView,GalleryPresenter> i
         Intent intent = getIntent();
         if(intent != null && intent.getSerializableExtra(IntentConstants.GALLERY_DATA) != null
                 && intent.getSerializableExtra(IntentConstants.GALLERY_DATA) instanceof Beauty){
-            return new GalleryPresenter((Beauty)intent.getSerializableExtra(IntentConstants.GALLERY_DATA));
+            return new GalleryPresenter(this,startPosition,(Beauty)intent.getSerializableExtra(IntentConstants.GALLERY_DATA));
         }
 
         Log.e(TAG, "intent data is null!");
-        return new GalleryPresenter(null);
+        return new GalleryPresenter(this,startPosition,null);
     }
 
     private void initView() {
@@ -115,6 +117,8 @@ public class GalleryActivity extends MvpActivity<GalleryView,GalleryPresenter> i
                     intent.putExtra(IntentConstants.SPECIFIC_DATA,(String)event.bundle);
                 }
             }).route(this,event.protocol);
+        }else if(AgeraBus.eventRepositories().get() instanceof BottomMenuEvent){
+            AppUtils.showBottomSheet(this,getPresenter());
         }
     }
 

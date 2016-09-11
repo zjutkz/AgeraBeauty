@@ -1,12 +1,17 @@
 package com.zjutkz.app.presenter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 
 import com.google.android.agera.Repositories;
 import com.google.android.agera.Repository;
 import com.google.android.agera.Updatable;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
+import com.kennyc.bottomsheet.BottomSheet;
+import com.kennyc.bottomsheet.BottomSheetListener;
+import com.zjutkz.app.R;
 import com.zjutkz.app.api.BeautyApi;
 import com.zjutkz.app.model.Beauty;
 import com.zjutkz.app.model.eventbus.LoadEvent;
@@ -14,6 +19,7 @@ import com.zjutkz.app.model.eventbus.RouteEvent;
 import com.zjutkz.app.router.RouterProtocol;
 import com.zjutkz.app.service.BeautyService;
 import com.zjutkz.app.utils.AppUtils;
+import com.zjutkz.app.utils.PhotoProcessor;
 import com.zjutkz.app.view.callback.MainView;
 import com.zjutkz.lib.AgeraBus;
 import com.zjutkz.powerfulrecyclerview.listener.OnLoadMoreListener;
@@ -27,7 +33,7 @@ import java.util.concurrent.Executors;
  * Created by kangzhe on 16/9/9.
  */
 public class MainPresenter extends MvpBasePresenter<MainView> implements Updatable,PowerfulRecyclerView.OnItemClickListener,
-        PowerfulRecyclerView.OnItemLongClickListener,OnRefreshListener,OnLoadMoreListener{
+        PowerfulRecyclerView.OnItemLongClickListener,OnRefreshListener,OnLoadMoreListener,BottomSheetListener{
 
     public static final int LOAD_MORE = 100;
     public static final int REFRESH = 101;
@@ -105,11 +111,40 @@ public class MainPresenter extends MvpBasePresenter<MainView> implements Updatab
 
     @Override
     public boolean onItemLongClick(RecyclerView parent, RecyclerView.ViewHolder holder, final int position) {
-        AppUtils.showSaveOrShareDialog(context,beauties.results.get(position).url);
+        AppUtils.showBottomSheet(context,this);
         return true;
     }
 
     public int getLastPosition() {
         return lastPosition;
+    }
+
+    @Override
+    public void onSheetShown(@NonNull BottomSheet bottomSheet) {
+
+    }
+
+    @Override
+    public void onSheetItemSelected(@NonNull BottomSheet bottomSheet, MenuItem menuItem) {
+        switch (menuItem.getItemId()){
+            case R.id.share:
+                PhotoProcessor.getInstance().sharePic(beauties.results.get(lastPosition).url);
+                break;
+            case R.id.save:
+                try {
+                    PhotoProcessor.getInstance().savePic(beauties.results.get(lastPosition).url);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            case R.id.wall_paper:
+                PhotoProcessor.getInstance().setWallPaper(context,beauties.results.get(lastPosition).url);
+                break;
+        }
+    }
+
+    @Override
+    public void onSheetDismissed(@NonNull BottomSheet bottomSheet, @DismissEvent int i) {
+
     }
 }

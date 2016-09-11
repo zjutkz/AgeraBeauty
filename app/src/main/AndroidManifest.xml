@@ -3,10 +3,11 @@
     package="com.zjutkz.app" >
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.SENDTO"></uses-permission>
-    <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL"></uses-permission>
+    <uses-permission android:name="android.permission.SENDTO"/>
+    <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.SET_WALLPAPER"/>
 
     <application
         android:name=".BeautyApplication"

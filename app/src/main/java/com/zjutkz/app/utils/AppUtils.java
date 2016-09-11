@@ -1,11 +1,13 @@
 package com.zjutkz.app.utils;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
+
+import com.kennyc.bottomsheet.BottomSheet;
+import com.kennyc.bottomsheet.BottomSheetListener;
+import com.zjutkz.app.R;
 
 /**
  * Created by kangzhe on 16/9/11.
@@ -41,29 +43,13 @@ public class AppUtils {
         handler.postDelayed(runnable, delayMillis);
     }
 
-    public static void showSaveOrShareDialog(Context context,final String data) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("保存还是分享呀~");
-        builder.setMessage("轻轻点击即可保存或者分享妹纸~");
-
-        builder.setPositiveButton("分享", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                PhotoProcessor.getInstance().sharePic(data);
-            }
-        });
-
-        builder.setNegativeButton("保存", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                try {
-                    PhotoProcessor.getInstance().savePic(data);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        builder.show();
+    public static void showBottomSheet(Context context,BottomSheetListener listener) {
+        if (listener != null) {
+            new BottomSheet.Builder(context)
+                    .setSheet(R.menu.bottom_sheet_menu)
+                    .setTitle("Hope you will enjoy it~ (ง •̀_•́)ง")
+                    .setListener(listener)
+                    .show();
+        }
     }
 }

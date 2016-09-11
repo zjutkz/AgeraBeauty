@@ -1,5 +1,6 @@
 package com.zjutkz.app.utils;
 
+import android.content.Context;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import com.google.android.agera.Repositories;
@@ -17,6 +18,7 @@ public class PhotoProcessor implements Updatable{
 
     private static final int ACTION_SHARE = 100;
     private static final int ACTION_SAVE = 101;
+    private static final int ACTION_WALL_PAPER = 102;
 
     private Repository<Boolean> repo;
 
@@ -55,14 +57,7 @@ public class PhotoProcessor implements Updatable{
                 })
                 .compile();
 
-        Executors.newSingleThreadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                Looper.prepare();
-                repo.addUpdatable(PhotoProcessor.this);
-                Looper.loop();
-            }
-        });
+        addToUpdatableInBackground();
     }
 
     public void sharePic(final String data) {
@@ -83,6 +78,30 @@ public class PhotoProcessor implements Updatable{
                 })
                 .compile();
 
+        addToUpdatableInBackground();
+    }
+
+    public void setWallPaper(final Context context, final String data){
+        lastAction = ACTION_WALL_PAPER;
+
+        Boolean isSuccess = false;
+        repo = Repositories.repositoryWithInitialValue(isSuccess)
+                .observe()
+                .onUpdatesPerLoop()
+                .goLazy()
+                .thenGetFrom(new Supplier<Boolean>() {
+                    @NonNull
+                    @Override
+                    public Boolean get() {
+                        return WallPaperUtils.setWallPaper(context, data);
+                    }
+                })
+                .compile();
+
+        addToUpdatableInBackground();
+    }
+
+    private void addToUpdatableInBackground() {
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
@@ -97,7 +116,9 @@ public class PhotoProcessor implements Updatable{
     public void update() {
         if(repo.get()){
             if(lastAction == ACTION_SAVE){
-                AppUtils.makeToast(AppUtils.getAppContext(),"保存图片成功!");
+                AppUtils.makeToast(AppUtils.getAppContext(),"保存图片成功~");
+            }else if(lastAction == ACTION_WALL_PAPER){
+                AppUtils.makeToast(AppUtils.getAppContext(),"设置壁纸成功~");
             }
         }else {
             AppUtils.makeToast(AppUtils.getAppContext(),"出错啦>.<~~");
