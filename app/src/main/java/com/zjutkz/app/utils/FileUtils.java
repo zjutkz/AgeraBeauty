@@ -4,13 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.agera.Function;
 import com.google.android.agera.Functions;
 import com.google.android.agera.Result;
+import com.zjutkz.app.function.FunctionProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -27,52 +27,11 @@ public class FileUtils {
 
     private static String cacheFileUri;
 
-    private static Function<String,Result<ByteArrayOutputStream>> fileStreamFunction = new Function<String, Result<ByteArrayOutputStream>>() {
-        @NonNull
-        @Override
-        public Result<ByteArrayOutputStream> apply(@NonNull String input) {
-            try {
-                return Result.success(mkFileToStream(AppUtils.getAppContext(),input));
-            } catch (Exception e) {
-                e.printStackTrace();
-                return Result.failure();
-            }
-        }
-    };
-
-    private static Function<Result<ByteArrayOutputStream>,Result<Boolean>> savePicFunction = new Function<Result<ByteArrayOutputStream>, Result<Boolean>>() {
-        @NonNull
-        @Override
-        public Result<Boolean> apply(@NonNull Result<ByteArrayOutputStream> input) {
-            if(input.succeeded()){
-                return Result.success(doSavePic(AppUtils.getAppContext(),input.get().toByteArray()));
-            }
-
-            return Result.failure();
-        }
-    };
-
-    private static Function<Result<Boolean>,Result<Boolean>> startShareFunction = new Function<Result<Boolean>, Result<Boolean>>() {
-        @NonNull
-        @Override
-        public Result<Boolean> apply(@NonNull Result<Boolean> input) {
-            if(input.succeeded()){
-                Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                File intentFile = new File(cacheFileUri);
-                shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(intentFile));
-                shareIntent.setType("image/jpg");
-                AppUtils.getAppContext().startActivity(Intent.createChooser(shareIntent, "请选择分享方式~").setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-            }
-            
-            return input;
-        }
-    };
-
     public static Function<String,Result<Boolean>> savePic(){
 
         return Functions.functionFrom(String.class)
-                .apply(fileStreamFunction)
-                .thenApply(savePicFunction);
+                .apply(FunctionProvider.fileStreamFunction)
+                .thenApply(FunctionProvider.savePicFunction);
     }
 
     public static boolean doSavePic(Context context,byte[] target){
@@ -122,9 +81,9 @@ public class FileUtils {
 
     public static Function<String,Result<Boolean>> sharePic(){
         return Functions.functionFrom(String.class)
-                .apply(fileStreamFunction)
-                .apply(savePicFunction)
-                .thenApply(startShareFunction);
+                .apply(FunctionProvider.fileStreamFunction)
+                .apply(FunctionProvider.savePicFunction)
+                .thenApply(FunctionProvider.startShareFunction);
     }
 
     public static ByteArrayOutputStream mkFileToStream(Context context, String data) throws IOException, ExecutionException, InterruptedException {
@@ -143,6 +102,7 @@ public class FileUtils {
         return out;
     }
 
-
-
+    public static String getCache(){
+        return cacheFileUri;
+    }
 }
