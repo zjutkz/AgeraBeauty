@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.agera.Function;
 import com.google.android.agera.Functions;
+import com.google.android.agera.Result;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -26,43 +27,48 @@ public class FileUtils {
 
     private static String cacheFileUri;
 
-    private static Function<String,ByteArrayOutputStream> fileStreamFunction = new Function<String, ByteArrayOutputStream>() {
+    private static Function<String,Result<ByteArrayOutputStream>> fileStreamFunction = new Function<String, Result<ByteArrayOutputStream>>() {
         @NonNull
         @Override
-        public ByteArrayOutputStream apply(@NonNull String input) {
+        public Result<ByteArrayOutputStream> apply(@NonNull String input) {
             try {
-                return mkFileToStream(AppUtils.getAppContext(),input);
+                return Result.success(mkFileToStream(AppUtils.getAppContext(),input));
             } catch (Exception e) {
                 e.printStackTrace();
-                return null;
+                return Result.failure();
             }
         }
     };
 
-    private static Function<ByteArrayOutputStream,Boolean> savePicFunction = new Function<ByteArrayOutputStream, Boolean>() {
+    private static Function<Result<ByteArrayOutputStream>,Result<Boolean>> savePicFunction = new Function<Result<ByteArrayOutputStream>, Result<Boolean>>() {
         @NonNull
         @Override
-        public Boolean apply(@NonNull ByteArrayOutputStream input) {
-            return doSavePic(AppUtils.getAppContext(),input.toByteArray());
+        public Result<Boolean> apply(@NonNull Result<ByteArrayOutputStream> input) {
+            if(input.succeeded()){
+                return Result.success(doSavePic(AppUtils.getAppContext(),input.get().toByteArray()));
+            }
+
+            return Result.failure();
         }
     };
 
-    private static Function<Boolean,Boolean> startShareFunction = new Function<Boolean, Boolean>() {
+    private static Function<Result<Boolean>,Result<Boolean>> startShareFunction = new Function<Result<Boolean>, Result<Boolean>>() {
         @NonNull
         @Override
-        public Boolean apply(@NonNull Boolean input) {
-            if(input){
+        public Result<Boolean> apply(@NonNull Result<Boolean> input) {
+            if(input.succeeded()){
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 File intentFile = new File(cacheFileUri);
                 shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(intentFile));
                 shareIntent.setType("image/jpg");
                 AppUtils.getAppContext().startActivity(Intent.createChooser(shareIntent, "请选择分享方式~").setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             }
+            
             return input;
         }
     };
 
-    public static Function<String,Boolean> savePic(){
+    public static Function<String,Result<Boolean>> savePic(){
 
         return Functions.functionFrom(String.class)
                 .apply(fileStreamFunction)
@@ -114,7 +120,7 @@ public class FileUtils {
         }
     }
 
-    public static Function<String,Boolean> sharePic(){
+    public static Function<String,Result<Boolean>> sharePic(){
         return Functions.functionFrom(String.class)
                 .apply(fileStreamFunction)
                 .apply(savePicFunction)

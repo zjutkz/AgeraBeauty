@@ -52,7 +52,7 @@ public class SpecificPresenter extends MvpBasePresenter<SpecificView> implements
                 }
                 break;
             case R.id.wall_paper:
-                PhotoProcessor.getInstance().setWallPaper(context,data);
+                PhotoProcessor.getInstance().setWallPaper(data);
                 break;
         }
     }

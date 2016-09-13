@@ -73,7 +73,7 @@ public class GalleryPresenter extends MvpBasePresenter<GalleryView> implements V
                 }
                 break;
             case R.id.wall_paper:
-                PhotoProcessor.getInstance().setWallPaper(context,currentBeauty.url);
+                PhotoProcessor.getInstance().setWallPaper(currentBeauty.url);
                 break;
         }
     }

@@ -139,7 +139,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> implements Updatab
                 }
                 break;
             case R.id.wall_paper:
-                PhotoProcessor.getInstance().setWallPaper(context,beauties.results.get(lastPosition).url);
+                PhotoProcessor.getInstance().setWallPaper(beauties.results.get(lastPosition).url);
                 break;
         }
     }

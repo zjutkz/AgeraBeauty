@@ -1,9 +1,9 @@
 package com.zjutkz.app.utils;
 
-import android.content.Context;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 
+import com.google.android.agera.Function;
 import com.google.android.agera.Repositories;
 import com.google.android.agera.Repository;
 import com.google.android.agera.Supplier;
@@ -42,6 +42,14 @@ public class PhotoProcessor implements Updatable{
         return instance;
     }
 
+    private Function<Throwable,String> errorHandler = new Function<Throwable, String>() {
+        @NonNull
+        @Override
+        public String apply(@NonNull Throwable input) {
+            return FAIL;
+        }
+    };
+
     public void savePic(final String data) throws ExecutionException, InterruptedException {
         lastAction = ACTION_SAVE;
 
@@ -49,7 +57,8 @@ public class PhotoProcessor implements Updatable{
                 .observe()
                 .onUpdatesPerLoop()
                 .goLazy()
-                .transform(FileUtils.savePic())
+                .attemptTransform(FileUtils.savePic())
+                .orEnd(errorHandler)
                 .thenGetFrom(new Supplier<String>() {
                     @NonNull
                     @Override
@@ -69,7 +78,8 @@ public class PhotoProcessor implements Updatable{
                 .observe()
                 .onUpdatesPerLoop()
                 .goLazy()
-                .transform(FileUtils.sharePic())
+                .attemptTransform(FileUtils.sharePic())
+                .orEnd(errorHandler)
                 .thenGetFrom(new Supplier<String>() {
                     @NonNull
                     @Override
@@ -82,20 +92,15 @@ public class PhotoProcessor implements Updatable{
         addToUpdatableInBackground();
     }
 
-    public void setWallPaper(final Context context, final String data){
+    public void setWallPaper(final String data){
         lastAction = ACTION_WALL_PAPER;
 
         repo = Repositories.repositoryWithInitialValue(data)
                 .observe()
                 .onUpdatesPerLoop()
                 .goLazy()
-                .getFrom(new Supplier<Boolean>() {
-                    @NonNull
-                    @Override
-                    public Boolean get() {
-                        return WallPaperUtils.setWallPaper(context, data);
-                    }
-                })
+                .attemptTransform(WallPaperUtils.changeWallPageFunction)
+                .orEnd(errorHandler)
                 .thenGetFrom(new Supplier<String>() {
                     @NonNull
                     @Override
