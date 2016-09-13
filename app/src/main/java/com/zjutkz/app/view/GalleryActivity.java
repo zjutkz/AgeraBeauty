@@ -39,6 +39,7 @@ public class GalleryActivity extends MvpActivity<GalleryView,GalleryPresenter> i
     private TextView indicator;
 
     private int startPosition = 0;
+    private int currentPosition = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,12 +48,14 @@ public class GalleryActivity extends MvpActivity<GalleryView,GalleryPresenter> i
 
         initData();
         initView();
+        initIndicator();
 
         AgeraBus.eventRepositories().registerInMainThread(this);
     }
 
     private void initData() {
         startPosition = getIntent().getIntExtra(IntentConstants.GALLERY_START,0);
+        currentPosition = startPosition;
     }
 
     @Override
@@ -60,7 +63,6 @@ public class GalleryActivity extends MvpActivity<GalleryView,GalleryPresenter> i
         super.onResume();
 
         initAdapter();
-        initIndicator();
     }
 
     @Override
@@ -79,9 +81,7 @@ public class GalleryActivity extends MvpActivity<GalleryView,GalleryPresenter> i
     private void initAdapter() {
         adapter = new GalleryAdapter(getPresenter().getBeauties());
         viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(startPosition);
-
-        indicator = (TextView)findViewById(R.id.indicator);
+        viewPager.setCurrentItem(currentPosition);
     }
 
     @NonNull
@@ -101,13 +101,15 @@ public class GalleryActivity extends MvpActivity<GalleryView,GalleryPresenter> i
         viewPager = (ViewPager)findViewById(R.id.gallery);
         viewPager.setPageTransformer(true,new ScaleTransformer());
         viewPager.addOnPageChangeListener(getPresenter());
+
+        indicator = (TextView)findViewById(R.id.indicator);
     }
 
     @Override
     public void onEventReceiveInMain() {
         if(AgeraBus.eventRepositories().get() instanceof PageChangedEvent){
-            int position = ((PageChangedEvent) AgeraBus.eventRepositories().get()).currentPosition;
-            changeIndicator(position);
+            currentPosition = ((PageChangedEvent) AgeraBus.eventRepositories().get()).currentPosition;
+            changeIndicator(currentPosition);
         }else if(AgeraBus.eventRepositories().get() instanceof RouteEvent){
             final RouteEvent event = (RouteEvent) AgeraBus.eventRepositories().get();
             if(RouterProtocol.SPECIFIC.equals(event.protocol))
@@ -123,7 +125,7 @@ public class GalleryActivity extends MvpActivity<GalleryView,GalleryPresenter> i
     }
 
     private void changeIndicator(int position) {
-        indicator.setText(position + " / " + getPresenter().getBeauties().size());
+        indicator.setText((position + 1) + " / " + getPresenter().getBeauties().size());
     }
 
     @Override

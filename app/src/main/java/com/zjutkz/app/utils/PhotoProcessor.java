@@ -3,6 +3,7 @@ package com.zjutkz.app.utils;
 import android.content.Context;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+
 import com.google.android.agera.Repositories;
 import com.google.android.agera.Repository;
 import com.google.android.agera.Supplier;
@@ -20,7 +21,10 @@ public class PhotoProcessor implements Updatable{
     private static final int ACTION_SAVE = 101;
     private static final int ACTION_WALL_PAPER = 102;
 
-    private Repository<Boolean> repo;
+    private static final String SUCCESS = "success";
+    private static final String FAIL = "fail";
+
+    private Repository<String> repo;
 
     private int lastAction;
 
@@ -41,18 +45,16 @@ public class PhotoProcessor implements Updatable{
     public void savePic(final String data) throws ExecutionException, InterruptedException {
         lastAction = ACTION_SAVE;
 
-        Boolean isSuccess = true;
-        repo = Repositories.repositoryWithInitialValue(isSuccess)
+        repo = Repositories.repositoryWithInitialValue(data)
                 .observe()
                 .onUpdatesPerLoop()
-                .goTo(Executors.newSingleThreadExecutor())
                 .goLazy()
-                .thenGetFrom(new Supplier<Boolean>() {
-
+                .transform(FileUtils.savePic())
+                .thenGetFrom(new Supplier<String>() {
                     @NonNull
                     @Override
-                    public Boolean get() {
-                        return FileUtils.savePic(AppUtils.getAppContext(),data);
+                    public String get() {
+                        return SUCCESS;
                     }
                 })
                 .compile();
@@ -63,17 +65,16 @@ public class PhotoProcessor implements Updatable{
     public void sharePic(final String data) {
         lastAction = ACTION_SHARE;
 
-        Boolean isSuccess = true;
-        repo = Repositories.repositoryWithInitialValue(isSuccess)
+        repo = Repositories.repositoryWithInitialValue(data)
                 .observe()
                 .onUpdatesPerLoop()
                 .goLazy()
-                .thenGetFrom(new Supplier<Boolean>() {
-
+                .transform(FileUtils.sharePic())
+                .thenGetFrom(new Supplier<String>() {
                     @NonNull
                     @Override
-                    public Boolean get() {
-                        return FileUtils.sharePic(AppUtils.getAppContext(),data);
+                    public String get() {
+                        return SUCCESS;
                     }
                 })
                 .compile();
@@ -84,16 +85,22 @@ public class PhotoProcessor implements Updatable{
     public void setWallPaper(final Context context, final String data){
         lastAction = ACTION_WALL_PAPER;
 
-        Boolean isSuccess = false;
-        repo = Repositories.repositoryWithInitialValue(isSuccess)
+        repo = Repositories.repositoryWithInitialValue(data)
                 .observe()
                 .onUpdatesPerLoop()
                 .goLazy()
-                .thenGetFrom(new Supplier<Boolean>() {
+                .getFrom(new Supplier<Boolean>() {
                     @NonNull
                     @Override
                     public Boolean get() {
                         return WallPaperUtils.setWallPaper(context, data);
+                    }
+                })
+                .thenGetFrom(new Supplier<String>() {
+                    @NonNull
+                    @Override
+                    public String get() {
+                        return SUCCESS;
                     }
                 })
                 .compile();
@@ -114,7 +121,7 @@ public class PhotoProcessor implements Updatable{
 
     @Override
     public void update() {
-        if(repo.get()){
+        if(SUCCESS.equals(repo.get())){
             if(lastAction == ACTION_SAVE){
                 AppUtils.makeToast(AppUtils.getAppContext(),"保存图片成功~");
             }else if(lastAction == ACTION_WALL_PAPER){

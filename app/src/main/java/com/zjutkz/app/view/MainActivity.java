@@ -57,8 +57,8 @@ public class MainActivity extends MvpActivity<MainView,MainPresenter> implements
             beauties.setAdapter(adapter);
             beauties.setOnItemClickListener(getPresenter());
             beauties.setOnItemLongClickListener(getPresenter());
-            beauties.setHeaderView(LayoutInflater.from(this).inflate(R.layout.header_refresh,beauties,false));
-            beauties.setFooterView(LayoutInflater.from(this).inflate(R.layout.footer_load_more,beauties,false));
+            beauties.setFooterView(LayoutInflater.from(this).inflate(R.layout.footer,beauties,false));
+            beauties.setHeaderView(LayoutInflater.from(this).inflate(R.layout.header,beauties,false));
         }
     }
 

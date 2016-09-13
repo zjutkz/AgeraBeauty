@@ -111,6 +111,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> implements Updatab
 
     @Override
     public boolean onItemLongClick(RecyclerView parent, RecyclerView.ViewHolder holder, final int position) {
+        lastPosition = position;
         AppUtils.showBottomSheet(context,this);
         return true;
     }
