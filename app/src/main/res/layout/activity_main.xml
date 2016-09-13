@@ -11,6 +11,7 @@
         android:id="@+id/beauty_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:max_to_pull="@dimen/header_height"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     </com.zjutkz.powerfulrecyclerview.ptr.PowerfulRecyclerView>
