@@ -11,10 +11,18 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_height">
 
-        <include
-            layout="@layout/tool_bar">
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_height"
+            android:gravity="center_vertical"
+            android:textSize="20sp"
+            android:text="Agera Beauties"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            app:layout_scrollFlags="scroll|enterAlways">
 
-        </include>
+        </TextView>
     </android.support.design.widget.AppBarLayout>
 
     <com.zjutkz.powerfulrecyclerview.ptr.PowerfulRecyclerView
