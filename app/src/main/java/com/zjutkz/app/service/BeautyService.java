@@ -25,7 +25,7 @@ public class BeautyService {
 
     public Retrofit getNetEngine(){
         return new Retrofit.Builder()
-                .baseUrl("http://gank.io/api/search/query/listview/category/福利/")
+                .baseUrl("http://gank.io/api/data/福利/10/")
                 .client(new OkHttpClient())
                 .addCallAdapterFactory(AgeraCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())

@@ -113,12 +113,12 @@ public class GalleryActivity extends MvpActivity<GalleryView,GalleryPresenter> i
         }else if(AgeraBus.eventRepositories().get() instanceof RouteEvent){
             final RouteEvent event = (RouteEvent) AgeraBus.eventRepositories().get();
             if(RouterProtocol.SPECIFIC.equals(event.protocol))
-            Router.getInstance().hookIntent(new Router.IntentHooker() {
-                @Override
-                public void hookIntent(Intent intent) {
-                    intent.putExtra(IntentConstants.SPECIFIC_DATA,(String)event.bundle);
-                }
-            }).route(this,event.protocol);
+                Router.getInstance().hookIntent(new Router.IntentHooker() {
+                    @Override
+                    public void hookIntent(Intent intent) {
+                        intent.putExtra(IntentConstants.SPECIFIC_DATA,(String)event.bundle);
+                    }
+                }).route(this,event.protocol);
         }else if(AgeraBus.eventRepositories().get() instanceof BottomMenuEvent){
             AppUtils.showBottomSheet(this,getPresenter());
         }

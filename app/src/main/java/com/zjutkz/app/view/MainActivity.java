@@ -1,11 +1,17 @@
 package com.zjutkz.app.view;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.hannesdorfmann.mosby.mvp.MvpActivity;
 import com.zjutkz.app.R;
@@ -31,6 +37,8 @@ public class MainActivity extends MvpActivity<MainView,MainPresenter> implements
 
     private PowerfulRecyclerView beauties;
     private MainListAdapter adapter;
+    private ViewGroup networkErrorLayout;
+    private ImageView refresh;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,6 +48,13 @@ public class MainActivity extends MvpActivity<MainView,MainPresenter> implements
         initBus();
         initAdapter();
         initView();
+        configToolbar();
+    }
+
+    private void configToolbar() {
+        TextView title = (TextView)findViewById(R.id.title);
+        Typeface typeface = Typeface.createFromAsset(getAssets(),"fonts/introduction.TTF");
+        title.setTypeface(typeface);
     }
 
     private void initBus() {
@@ -59,7 +74,14 @@ public class MainActivity extends MvpActivity<MainView,MainPresenter> implements
             beauties.setOnItemLongClickListener(getPresenter());
             beauties.setFooterView(LayoutInflater.from(this).inflate(R.layout.footer,beauties,false));
             beauties.setHeaderView(LayoutInflater.from(this).inflate(R.layout.header,beauties,false));
+
+            beauties.setNoDataViewLayout(R.layout.layout_net_work_error);
         }
+    }
+
+    public void refresh(View view){
+        beauties.hideSpecialInfoView();
+        getPresenter().getBeauty(MainPresenter.REFRESH);
     }
 
     @Override
@@ -87,6 +109,10 @@ public class MainActivity extends MvpActivity<MainView,MainPresenter> implements
     public void onEventReceiveInMain() {
         Object event = AgeraBus.eventRepositories().get();
         if(event instanceof LoadEvent){
+            if(!((LoadEvent) event).isSuccess){
+                beauties.showNoDataView();
+                return;
+            }
             if(((LoadEvent) event).reqType == MainPresenter.REFRESH){
                 beauties.stopRefresh();
             }else {

@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.MainActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height">
+
+        <include
+            layout="@layout/tool_bar">
+
+        </include>
+    </android.support.design.widget.AppBarLayout>
 
     <com.zjutkz.powerfulrecyclerview.ptr.PowerfulRecyclerView
         android:id="@+id/beauty_list"
@@ -18,4 +28,4 @@
 
     
 
-</FrameLayout>
+</android.support.design.widget.CoordinatorLayout>

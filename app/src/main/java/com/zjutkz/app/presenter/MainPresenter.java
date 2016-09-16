@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 
+import com.google.android.agera.Function;
 import com.google.android.agera.Repositories;
 import com.google.android.agera.Repository;
 import com.google.android.agera.Updatable;
@@ -38,7 +39,10 @@ public class MainPresenter extends MvpBasePresenter<MainView> implements Updatab
     public static final int LOAD_MORE = 100;
     public static final int REFRESH = 101;
 
-    private static final int PAGE_SIZE = 10;
+    private static final int NET_WORK_ERROR = 200;
+    private static final int NET_WORK_SUCCESS = 201;
+
+    private int isSuccess = NET_WORK_SUCCESS;
 
     private Repository<Beauty> repository;
 
@@ -51,6 +55,16 @@ public class MainPresenter extends MvpBasePresenter<MainView> implements Updatab
     private Beauty beauties;
 
     private int lastPosition;
+
+    private Function<Throwable,Beauty> errorHandler = new Function<Throwable, Beauty>() {
+        @NonNull
+        @Override
+        public Beauty apply(@NonNull Throwable input) {
+            isSuccess = NET_WORK_ERROR;
+
+            return new Beauty();
+        }
+    };
 
     public MainPresenter(Context context){
         this.context = context;
@@ -74,8 +88,8 @@ public class MainPresenter extends MvpBasePresenter<MainView> implements Updatab
                 .observe()
                 .onUpdatesPerLoop()
                 .goTo(Executors.newSingleThreadExecutor())
-                .thenAttemptGetFrom(api.getUserInfo(PAGE_SIZE,page++))
-                .orSkip()
+                .thenAttemptGetFrom(api.getUserInfo(page++))
+                .orEnd(errorHandler)
                 .compile();
 
         repository.addUpdatable(this);
@@ -83,6 +97,10 @@ public class MainPresenter extends MvpBasePresenter<MainView> implements Updatab
 
     @Override
     public void update() {
+        if(isSuccess == NET_WORK_ERROR){
+            AgeraBus.eventRepositories().post(new LoadEvent(false,-1,null));
+            return;
+        }
         if(lastAction == REFRESH){
             beauties.results.clear();
             beauties.results.addAll(repository.get().results);
@@ -90,7 +108,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> implements Updatab
             beauties.results.addAll(repository.get().results);
         }
 
-        AgeraBus.eventRepositories().post(new LoadEvent(lastAction,beauties.results));
+        AgeraBus.eventRepositories().post(new LoadEvent(true,lastAction,beauties.results));
     }
 
     @Override

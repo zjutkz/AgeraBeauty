@@ -50,6 +50,14 @@ public class PhotoProcessor implements Updatable{
         }
     };
 
+    private Supplier<String> successHandler = new Supplier<String>() {
+        @NonNull
+        @Override
+        public String get() {
+            return SUCCESS;
+        }
+    };
+
     public void savePic(final String data) throws ExecutionException, InterruptedException {
         lastAction = ACTION_SAVE;
 
@@ -59,13 +67,7 @@ public class PhotoProcessor implements Updatable{
                 .goLazy()
                 .attemptTransform(FileUtils.savePic())
                 .orEnd(errorHandler)
-                .thenGetFrom(new Supplier<String>() {
-                    @NonNull
-                    @Override
-                    public String get() {
-                        return SUCCESS;
-                    }
-                })
+                .thenGetFrom(successHandler)
                 .compile();
 
         addToUpdatableInBackground();
@@ -80,13 +82,7 @@ public class PhotoProcessor implements Updatable{
                 .goLazy()
                 .attemptTransform(FileUtils.sharePic())
                 .orEnd(errorHandler)
-                .thenGetFrom(new Supplier<String>() {
-                    @NonNull
-                    @Override
-                    public String get() {
-                        return SUCCESS;
-                    }
-                })
+                .thenGetFrom(successHandler)
                 .compile();
 
         addToUpdatableInBackground();
@@ -101,13 +97,7 @@ public class PhotoProcessor implements Updatable{
                 .goLazy()
                 .attemptTransform(WallPaperUtils.changeWallPageFunction)
                 .orEnd(errorHandler)
-                .thenGetFrom(new Supplier<String>() {
-                    @NonNull
-                    @Override
-                    public String get() {
-                        return SUCCESS;
-                    }
-                })
+                .thenGetFrom(successHandler)
                 .compile();
 
         addToUpdatableInBackground();

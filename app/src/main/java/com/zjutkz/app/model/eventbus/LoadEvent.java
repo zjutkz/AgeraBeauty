@@ -10,10 +10,12 @@ import java.util.List;
  */
 public class LoadEvent implements Serializable{
 
+    public boolean isSuccess;
     public int reqType;
     public List<Beauty.BeautyEntity> beauties;
 
-    public LoadEvent(int reqType,List<Beauty.BeautyEntity> beauties){
+    public LoadEvent(boolean isSuccess,int reqType,List<Beauty.BeautyEntity> beauties){
+        this.isSuccess = isSuccess;
         this.reqType = reqType;
         this.beauties = beauties;
     }
