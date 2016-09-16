@@ -8,11 +8,13 @@
         android:layout_width="400dp"
         android:layout_height="300dp"
         android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/toolbar_height"
         android:src="@drawable/network_error"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/toolbar_height"
         android:layout_gravity="bottom">
 
         <TextView

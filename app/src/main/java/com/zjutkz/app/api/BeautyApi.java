@@ -12,6 +12,6 @@ import retrofit2.http.Path;
  */
 public interface BeautyApi {
 
-    @GET("{page}")
+    @GET("/{page}")
     Supplier<Result<Beauty>> getUserInfo(@Path("page") int page);
 }
