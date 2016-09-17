@@ -4,11 +4,19 @@
     android:layout_height="match_parent"
     android:background="#000000">
 
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/specific_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/specific_place_holder"
+        android:scaleType="centerCrop"/>
+
     <uk.co.senab.photoview.PhotoView
         android:id="@+id/photo_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="80dp"
-        android:layout_marginTop="80dp"/>
+        android:layout_marginTop="80dp"
+        android:visibility="gone"/>
 
 </FrameLayout>
