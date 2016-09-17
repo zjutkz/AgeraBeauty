@@ -60,8 +60,8 @@ public class MainPresenter extends MvpBasePresenter<MainView> implements Updatab
         @NonNull
         @Override
         public Beauty apply(@NonNull Throwable input) {
+            input.printStackTrace();
             isSuccess = NET_WORK_ERROR;
-
             return new Beauty();
         }
     };
