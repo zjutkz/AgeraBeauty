@@ -5,11 +5,9 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hannesdorfmann.mosby.mvp.MvpActivity;
@@ -36,8 +34,6 @@ public class MainActivity extends MvpActivity<MainView,MainPresenter> implements
 
     private PowerfulRecyclerView beauties;
     private MainListAdapter adapter;
-    private ViewGroup networkErrorLayout;
-    private ImageView refresh;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,7 +63,7 @@ public class MainActivity extends MvpActivity<MainView,MainPresenter> implements
     private void initView() {
         beauties = (PowerfulRecyclerView)findViewById(R.id.beauty_list);
         if (beauties != null) {
-            beauties.setLayoutManager(new GridLayoutManager(this,2));
+            beauties.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
             beauties.setAdapter(adapter);
             beauties.setOnItemClickListener(getPresenter());
             beauties.setOnItemLongClickListener(getPresenter());
