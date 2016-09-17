@@ -44,6 +44,8 @@ public class MainActivity extends MvpActivity<MainView,MainPresenter> implements
         initAdapter();
         initView();
         configToolbar();
+
+        getPresenter().getBeauty(MainPresenter.REFRESH);
     }
 
     private void configToolbar() {
@@ -69,22 +71,14 @@ public class MainActivity extends MvpActivity<MainView,MainPresenter> implements
             beauties.setOnItemLongClickListener(getPresenter());
             beauties.setFooterView(LayoutInflater.from(this).inflate(R.layout.footer,beauties,false));
             beauties.setHeaderView(LayoutInflater.from(this).inflate(R.layout.header,beauties,false));
-
+            beauties.setOnRefreshListener(getPresenter());
+            beauties.setOnLoadMoreListener(getPresenter());
             beauties.setNoDataViewLayout(R.layout.layout_net_work_error);
         }
     }
 
     public void refresh(View view){
         beauties.hideSpecialInfoView();
-        getPresenter().getBeauty(MainPresenter.REFRESH);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        beauties.setOnRefreshListener(getPresenter());
-        beauties.setOnLoadMoreListener(getPresenter());
-
         getPresenter().getBeauty(MainPresenter.REFRESH);
     }
 

@@ -47,6 +47,7 @@ public class SpecificActivity extends MvpActivity<SpecificView,SpecificPresenter
     private void showBeauty() {
         Glide.with(this)
                 .load(beauty)
+                .placeholder(R.drawable.specific_place_holder)
                 .centerCrop()
                 .into(photoView);
     }
