@@ -1,21 +1,18 @@
 package com.zjutkz.app.view;
 
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.widget.TextView;
 
+import com.gigamole.infinitecycleviewpager.HorizontalInfiniteCycleViewPager;
 import com.hannesdorfmann.mosby.mvp.MvpActivity;
 import com.zjutkz.app.R;
 import com.zjutkz.app.adapter.GalleryAdapter;
 import com.zjutkz.app.constants.IntentConstants;
 import com.zjutkz.app.model.Beauty;
 import com.zjutkz.app.model.eventbus.BottomMenuEvent;
-import com.zjutkz.app.model.eventbus.PageChangedEvent;
 import com.zjutkz.app.model.eventbus.RouteEvent;
 import com.zjutkz.app.presenter.GalleryPresenter;
 import com.zjutkz.app.router.Router;
@@ -33,13 +30,10 @@ public class GalleryActivity extends MvpActivity<GalleryView,GalleryPresenter> i
 
     private static final String TAG = "GalleryActivity";
 
-    private ViewPager viewPager;
+    private HorizontalInfiniteCycleViewPager viewPager;
     private GalleryAdapter adapter;
 
-    private TextView indicator;
-
     private int startPosition = 0;
-    private int currentPosition = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,14 +42,12 @@ public class GalleryActivity extends MvpActivity<GalleryView,GalleryPresenter> i
 
         initData();
         initView();
-        initIndicator();
 
         AgeraBus.eventRepositories().registerInMainThread(this);
     }
 
     private void initData() {
         startPosition = getIntent().getIntExtra(IntentConstants.GALLERY_START,0);
-        currentPosition = startPosition;
     }
 
     @Override
@@ -72,16 +64,10 @@ public class GalleryActivity extends MvpActivity<GalleryView,GalleryPresenter> i
         AgeraBus.eventRepositories().unRegister(this);
     }
 
-    private void initIndicator() {
-        Typeface typeface = Typeface.createFromAsset(getAssets(),"fonts/introduction.TTF");
-        indicator.setTypeface(typeface);
-        changeIndicator(startPosition);
-    }
-
     private void initAdapter() {
         adapter = new GalleryAdapter(getPresenter().getBeauties());
         viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(currentPosition);
+        viewPager.setCurrentItem(startPosition);
     }
 
     @NonNull
@@ -98,19 +84,14 @@ public class GalleryActivity extends MvpActivity<GalleryView,GalleryPresenter> i
     }
 
     private void initView() {
-        viewPager = (ViewPager)findViewById(R.id.gallery);
+        viewPager = (HorizontalInfiniteCycleViewPager)findViewById(R.id.gallery);
         viewPager.setPageTransformer(true,new ScaleTransformer());
         viewPager.addOnPageChangeListener(getPresenter());
-
-        indicator = (TextView)findViewById(R.id.indicator);
     }
 
     @Override
     public void onEventReceiveInMain() {
-        if(AgeraBus.eventRepositories().get() instanceof PageChangedEvent){
-            currentPosition = ((PageChangedEvent) AgeraBus.eventRepositories().get()).currentPosition;
-            changeIndicator(currentPosition);
-        }else if(AgeraBus.eventRepositories().get() instanceof RouteEvent){
+        if(AgeraBus.eventRepositories().get() instanceof RouteEvent){
             final RouteEvent event = (RouteEvent) AgeraBus.eventRepositories().get();
             if(RouterProtocol.SPECIFIC.equals(event.protocol))
                 Router.getInstance().hookIntent(new Router.IntentHooker() {
@@ -122,10 +103,6 @@ public class GalleryActivity extends MvpActivity<GalleryView,GalleryPresenter> i
         }else if(AgeraBus.eventRepositories().get() instanceof BottomMenuEvent){
             AppUtils.showBottomSheet(this,getPresenter());
         }
-    }
-
-    private void changeIndicator(int position) {
-        indicator.setText((position + 1) + " / " + getPresenter().getBeauties().size());
     }
 
     @Override

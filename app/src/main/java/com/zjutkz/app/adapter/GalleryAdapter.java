@@ -21,6 +21,8 @@ import java.util.List;
  */
 public class GalleryAdapter extends PagerAdapter{
 
+    public static String sNeedProceedBeauty;
+
     private List<Beauty.BeautyEntity> beauties;
 
     public GalleryAdapter(List<Beauty.BeautyEntity> beauties){
@@ -55,6 +57,7 @@ public class GalleryAdapter extends PagerAdapter{
         iv.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                sNeedProceedBeauty = beauties.get(position).url;
                 AgeraBus.eventRepositories().post(new BottomMenuEvent());
                 return true;
             }

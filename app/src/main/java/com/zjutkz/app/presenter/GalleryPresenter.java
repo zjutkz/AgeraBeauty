@@ -9,6 +9,7 @@ import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.kennyc.bottomsheet.BottomSheet;
 import com.kennyc.bottomsheet.BottomSheetListener;
 import com.zjutkz.app.R;
+import com.zjutkz.app.adapter.GalleryAdapter;
 import com.zjutkz.app.model.Beauty;
 import com.zjutkz.app.model.eventbus.PageChangedEvent;
 import com.zjutkz.app.utils.PhotoProcessor;
@@ -45,7 +46,6 @@ public class GalleryPresenter extends MvpBasePresenter<GalleryView> implements V
 
     @Override
     public void onPageSelected(int position) {
-        currentBeauty = beauties.results.get(position);
         AgeraBus.eventRepositories().post(new PageChangedEvent(position));
     }
 
@@ -59,21 +59,23 @@ public class GalleryPresenter extends MvpBasePresenter<GalleryView> implements V
 
     }
 
+    // TODO: 16/9/17 because using infinitecycleviewpager,item index is incorrect(more han 50000,is it a bug for this component??),
+    // TODO: 16/9/17 so I just using static variable,any elegant way?!
     @Override
     public void onSheetItemSelected(@NonNull BottomSheet bottomSheet, MenuItem menuItem) {
         switch (menuItem.getItemId()){
             case R.id.share:
-                PhotoProcessor.getInstance().sharePic(currentBeauty.url);
+                PhotoProcessor.getInstance().sharePic(GalleryAdapter.sNeedProceedBeauty);
                 break;
             case R.id.save:
                 try {
-                    PhotoProcessor.getInstance().savePic(currentBeauty.url);
+                    PhotoProcessor.getInstance().savePic(GalleryAdapter.sNeedProceedBeauty);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
             case R.id.wall_paper:
-                PhotoProcessor.getInstance().setWallPaper(currentBeauty.url);
+                PhotoProcessor.getInstance().setWallPaper(GalleryAdapter.sNeedProceedBeauty);
                 break;
         }
     }
