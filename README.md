@@ -6,7 +6,7 @@ A sample App based on [Gank.io's Api](http://gank.io/api), using [Agera](https:/
 
 #Why
 
-Recently,there are so many Apps choosing RxJava+retrofit+MVP to be the framework of itself,while I thought  [Agera](https://github.com/google/agera) may be the better one in Android platform instead of RxJava because I think the latter is so heavy and Agera can do all the things RxJava does.
+Recently,there are so many Apps choosing RxJava+retrofit+MVP to be the framework of itself,while I thought  [Agera](https://github.com/google/agera) may be the better one in Android platform instead of RxJava because the latter is so heavy and Agera can do all the things RxJava does.
 
 So I made this App to show how to use Agera to replace RxJava in the model layer of an Android App.
 
