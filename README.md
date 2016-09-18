@@ -12,22 +12,6 @@ So I made this App to show how to use Agera to replace RxJava in the model layer
 
 
 
-#ScreenShot
-
- ![main_list](screenshots/main_list.png)
-
-
-
- ![gallery](screenshots/gallery.png)
-
-
-
- ![specific](screenshots/specific.png)
-
-
-
-
-
 #How Agera works
 
 Agera+retrofit:
