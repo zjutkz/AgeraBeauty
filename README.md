@@ -14,17 +14,17 @@ So I made this App to show how to use Agera to replace RxJava in the model layer
 
 #ScreenShot
 
- 
-
-![main_list](/Users/kangzhe/Downloads/main_list.png)
+ ![main_list](screenshots/main_list.png)
 
 
 
-![Screenshot_2016-09-18-21-27-21](/Users/kangzhe/Downloads/Screenshot_2016-09-18-21-27-21.png)
+ ![gallery](screenshots/gallery.png)
 
 
 
-![Screenshot_2016-09-18-21-27-28](/Users/kangzhe/Downloads/Screenshot_2016-09-18-21-27-28.png)
+ ![specific](screenshots/specific.png)
+
+
 
 
 
