@@ -85,6 +85,7 @@ public class MainActivity extends MvpActivity<MainView,MainPresenter> implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        getPresenter().removeUpdatable();
         AgeraBus.eventRepositories().unRegister(this);
     }
 

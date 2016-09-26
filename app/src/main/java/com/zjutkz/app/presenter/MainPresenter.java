@@ -5,9 +5,12 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 
+import com.google.android.agera.BaseObservable;
 import com.google.android.agera.Function;
 import com.google.android.agera.Repositories;
 import com.google.android.agera.Repository;
+import com.google.android.agera.Result;
+import com.google.android.agera.Supplier;
 import com.google.android.agera.Updatable;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.kennyc.bottomsheet.BottomSheet;
@@ -46,6 +49,8 @@ public class MainPresenter extends MvpBasePresenter<MainView> implements Updatab
 
     private Repository<Beauty> repository;
 
+    private UpdatableObserver eventSource = new UpdatableObserver();
+
     private Context context;
     
     private int lastAction;
@@ -72,27 +77,28 @@ public class MainPresenter extends MvpBasePresenter<MainView> implements Updatab
         page = 1;
         beauties = new Beauty();
         beauties.results = new ArrayList<>();
+
+        Beauty beauty = new Beauty();
+        repository = Repositories.repositoryWithInitialValue(beauty)
+                .observe(eventSource)
+                .onUpdatesPerLoop()
+                .goTo(Executors.newSingleThreadExecutor())
+                .thenAttemptGetFrom(eventSource)
+                .orEnd(errorHandler)
+                .compile();
+
+        repository.addUpdatable(this);
     }
 
     public void getBeauty(int type){
-        BeautyApi api = BeautyService.getInstance().getNetEngine().create(BeautyApi.class);
-
         if(type == REFRESH){
             page = 1;
         }
 
         lastAction = type;
 
-        Beauty beauty = new Beauty();
-        repository = Repositories.repositoryWithInitialValue(beauty)
-                .observe()
-                .onUpdatesPerLoop()
-                .goTo(Executors.newSingleThreadExecutor())
-                .thenAttemptGetFrom(api.getUserInfo(page++))
-                .orEnd(errorHandler)
-                .compile();
-
-        repository.addUpdatable(this);
+        eventSource.setPage(page++);
+        eventSource.update();
     }
 
     @Override
@@ -138,6 +144,10 @@ public class MainPresenter extends MvpBasePresenter<MainView> implements Updatab
         return lastPosition;
     }
 
+    public void removeUpdatable(){
+        repository.removeUpdatable(this);
+    }
+
     @Override
     public void onSheetShown(@NonNull BottomSheet bottomSheet) {
 
@@ -165,5 +175,36 @@ public class MainPresenter extends MvpBasePresenter<MainView> implements Updatab
     @Override
     public void onSheetDismissed(@NonNull BottomSheet bottomSheet, @DismissEvent int i) {
 
+    }
+
+    private static class UpdatableObserver extends BaseObservable implements Supplier<Result<Beauty>>{
+
+        private int page;
+
+        private BeautyApi api;
+
+        public UpdatableObserver(){
+            this(1);
+        }
+
+        public UpdatableObserver(int page){
+            this.page = page;
+
+            api = BeautyService.getInstance().getNetEngine().create(BeautyApi.class);
+        }
+
+        public void setPage(int page){
+            this.page = page;
+        }
+
+        public void update(){
+            dispatchUpdate();
+        }
+
+        @NonNull
+        @Override
+        public Result<Beauty> get() {
+            return api.getUserInfo(page).get();
+        }
     }
 }
