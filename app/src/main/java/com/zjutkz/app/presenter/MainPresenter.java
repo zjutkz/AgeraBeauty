@@ -204,7 +204,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> implements Updatab
         @NonNull
         @Override
         public Result<Beauty> get() {
-            return api.getUserInfo(page).get();
+            return api.getBeautyInfo(page).get();
         }
     }
 }
